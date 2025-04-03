@@ -59,6 +59,20 @@ export function Chat() {
                   <div className='flex-1 prose prose-invert prose-zinc prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-h4:text-base prose-h5:text-sm prose-h6:text-xs'>
                     <Markdown>{message.content}</Markdown>
                   </div>
+
+                  {message.parts.map((part) => {
+                    if (part.type !== "tool-invocation") {
+                      return null;
+                    }
+
+                    if (part.toolInvocation.state === "result") {
+                      return (
+                        <pre key={part.toolInvocation.toolCallId}>
+                          {JSON.stringify(part.toolInvocation.result, null, 2)}
+                        </pre>
+                      );
+                    }
+                  })}
                 </div>
               </div>
             );
