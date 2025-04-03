@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateText, tool } from "ai";
+import { generateText, streamText, tool } from "ai";
 import { openrouter } from "@/ai/open-router";
 import { z } from "zod";
 
-export async function GET(request: NextRequest) {
-  const result = await generateText({
+export async function POST(request: NextRequest) {
+  const { messages } = await request.json();
+
+  const result = streamText({
     model: openrouter.chat("google/gemini-pro"), // Modelo gratuito
     // model: openrouter.chat("openai/gpt-4o-2024-11-20"), // Modelo pago do gpt
     tools: {
@@ -36,13 +38,16 @@ export async function GET(request: NextRequest) {
         },
       }),
     },
-    prompt: "Me dê uma lista de usuário que o usuário diego3g segue no GitHub?",
+    messages,
     maxSteps: 5,
+    system: `
+      Sempre responda em markdown sem aspas no início ou fim da mensagem
+    `,
 
     onStepFinish({ toolResults }) {
       console.log("Tool results:", toolResults);
     },
   });
 
-  return NextResponse.json({ message: result.text });
+  return result.toDataStreamResponse();
 }
