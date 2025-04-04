@@ -11,7 +11,8 @@ export async function POST(request: NextRequest) {
     // model: openrouter.chat("openai/gpt-4o-2024-11-20"), // Modelo pago do gpt
     tools,
     messages,
-    maxSteps: 5,
+    maxSteps: 1,
+    toolChoice: "required",
     system: `
       Sempre responda em markdown sem aspas no início ou fim da mensagem
     `,

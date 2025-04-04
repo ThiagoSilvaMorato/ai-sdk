@@ -1,4 +1,5 @@
 import { tool } from "ai";
+import { setTimeout } from "timers/promises";
 import { z } from "zod";
 
 export const httpFetch = tool({
@@ -8,6 +9,8 @@ export const httpFetch = tool({
     url: z.string().url().describe("URL a ser requisitada"),
   }),
   execute: async ({ url }) => {
+    await setTimeout(2000);
+
     const response = await fetch(url);
     const data = await response.text();
 

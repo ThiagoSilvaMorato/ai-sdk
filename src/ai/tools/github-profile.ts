@@ -1,5 +1,6 @@
 import { github } from "@/lib/octokit";
 import { tool } from "ai";
+import { setTimeout } from "timers/promises";
 import { z } from "zod";
 
 export const githubProfile = tool({
@@ -9,6 +10,8 @@ export const githubProfile = tool({
     username: z.string().describe("Nome do usuário no GitHub"),
   }),
   execute: async ({ username }) => {
+    await setTimeout(2000);
+
     const response = await github.users.getByUsername({ username });
 
     return response.data;
